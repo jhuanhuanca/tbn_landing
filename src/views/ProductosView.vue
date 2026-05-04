@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 
 import Preloader from '../components/layout/Preloader.vue'
 import SiteHeader from '../components/layout/SiteHeader.vue'
@@ -89,17 +89,26 @@ function clearCart() {
   cartLines.value = []
 }
 
+const LEGACY_JS = {
+  core: `${import.meta.env.BASE_URL}assets/js/core.min.js`,
+  script: `${import.meta.env.BASE_URL}assets/js/script.js`,
+}
+
 function loadScript(src) {
   return new Promise((resolve, reject) => {
-    const existing = document.querySelector(`script[data-tbn-src="${src}"]`)
-    if (existing) return resolve()
+    const existingByMarker = document.querySelector(`script[data-tbn-src="${src}"]`)
+    const existingBySrc = document.querySelector(`script[src="${src}"]`)
+    if (existingByMarker || existingBySrc) return resolve()
     const s = document.createElement('script')
     s.src = src
     s.async = false
     s.defer = true
     s.dataset.tbnSrc = src
     s.onload = () => resolve()
-    s.onerror = () => reject(new Error(`No se pudo cargar ${src}`))
+    s.onerror = () => {
+      s.remove()
+      reject(new Error(`No se pudo cargar ${src}`))
+    }
     document.body.appendChild(s)
   })
 }
@@ -110,18 +119,23 @@ function smoothScrollTo(id) {
   el.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
-window.tbnSmoothScrollTo = smoothScrollTo
-
 onMounted(async () => {
-  await loadScript('/src/assets/js/core.min.js')
-  await loadScript('/src/assets/js/script.js')
+  window.tbnSmoothScrollTo = smoothScrollTo
+  await nextTick()
+  try {
+    await loadScript(LEGACY_JS.core)
+    await loadScript(LEGACY_JS.script)
+  } catch (err) {
+    console.error('[TBN]', err)
+  }
 })
 </script>
 
 <template>
-  <Preloader />
+  <div class="tbn-view-root">
+    <Preloader />
 
-  <div class="page tbn">
+    <div class="page tbn">
     <SiteHeader
       show-cart
       :cart-item-count="cartItemCount"
@@ -266,5 +280,6 @@ onMounted(async () => {
         </div>
       </aside>
     </Teleport>
+    </div>
   </div>
 </template>
