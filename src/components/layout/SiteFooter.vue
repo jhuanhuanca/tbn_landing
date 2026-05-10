@@ -30,13 +30,13 @@ defineProps({
             <li>
               <dl class="list-terms-minimal">
                 <dt>WhatsApp</dt>
-                <dd><a href="tel:+0000000000">+00 000 000 000</a></dd>
+                <dd><a href="tel:+591 67024326">+591 67024326</a></dd>
               </dl>
             </li>
             <li>
               <dl class="list-terms-minimal">
                 <dt>Correo</dt>
-                <dd><a href="mailto:info@tbnliving.com">info@tbnliving.com</a></dd>
+                <dd><a href="mailto:tbnliving@gmail.com">tbnliving@gmail.com</a></dd>
               </dl>
             </li>
             <li>
@@ -46,6 +46,16 @@ defineProps({
               </dl>
             </li>
           </ul>
+        </div>
+        <div class="col-sm-10 col-md-6 col-lg-3 col-xl-3">
+          <h6>politicas y condiciones de uso de la web</h6>
+          <ul class="list-xxs">
+            <li><a href="#" @click.prevent="onScroll('politicas')">Políticas de Privacidad</a></li>
+            <li><a href="#" @click.prevent="onScroll('condiciones')">Condiciones de Uso</a></li>
+            <li><a href="#" @click.prevent="onScroll('cookies')">Política de Cookies</a></li>
+              <li><a href="#" @click.prevent="onScroll('derechos')">Política de Derechos de Autor</a></li>
+              <li><a href="#" @click.prevent="onScroll('derechos')">Política de Protección de Datos Personales</a></li>
+            </ul>
         </div>
       </div>
     </div>
